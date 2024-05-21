@@ -1,0 +1,57 @@
+---
+- name: Presettings
+  hosts:
+    - servers
+  roles:
+    - role: create-sudo-user
+    - role: presetting
+    - role: docker
+
+- name: Generate certs
+  hosts:
+    - nemesis
+    - keycloak
+  roles:
+    - role: cert_gen
+
+- name: Deploy PostgreSQL
+  hosts:
+    - db
+  roles:
+    - role: postgres
+    - role: add_db_user
+    - role: create_db
+
+- name: Deploy minio
+  hosts: backup
+  roles:
+    - role: minio
+    
+- name: Deploy Keycloak
+  hosts: sso
+  roles:
+    - role: keycloak
+
+- name: Deploy Front
+  hosts: nemesis
+  roles:
+    - role: nemesis
+    - role: nginx
+
+- name: Deploy grafana
+  hosts:
+    - monitoring
+  roles:
+    - grafana
+
+- name: Deploy node-exporter
+  hosts:
+    - monitoring_client
+  roles:
+    - node-exporter
+
+- name: Deploy rsyslog
+  hosts:
+    - monitoring
+  roles:
+    - rsyslog
